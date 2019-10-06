@@ -1,7 +1,7 @@
 {
     "name": "bhittani/download",
     "license": "MIT",
-    "description": "Zip downloader.",
+    "description": "Archive downloader.",
     "keywords": ["zip", "download"],
     "homepage": "https://github.com/kamalkhan/download",
     "authors": [
