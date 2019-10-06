@@ -5,11 +5,11 @@ namespace Bhittani\Download;
 interface Contract
 {
     /**
-     * Download a file.
+     * Download a resource.
      *
-     * @param string $file
+     * @param string $resource
      * @param string $destination
      * @throws CanNotWriteException if the destination path already exists.
      */
-    public function download($file, $destination);
+    public function download($resource, $destination);
 }

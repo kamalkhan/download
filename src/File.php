@@ -19,7 +19,7 @@ class File implements Contract
     }
 
     /** @inheritDoc */
-    public function download($file, $destination, array $options = [])
+    public function download($resource, $destination, array $options = [])
     {
         if (file_exists($destination)) {
             throw new CanNotWriteException($destination);
@@ -29,7 +29,7 @@ class File implements Contract
             mkdir($dir, 0777, true);
         }
 
-        file_put_contents($destination, $this->getContents($file, $options));
+        file_put_contents($destination, $this->getContents($resource, $options));
     }
 
     protected function getContents($file, array $options)

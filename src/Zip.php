@@ -7,13 +7,13 @@ use ZipArchive;
 class Zip extends File
 {
     /** @inheritDoc */
-    public function download($file, $destination, array $options = [])
+    public function download($resource, $destination, array $options = [])
     {
         $destination = rtrim($destination, '\/');
         $parent = dirname($destination);
         $archive = $destination.'.zip';
 
-        parent::download($file, $archive);
+        parent::download($resource, $archive);
 
         $name = $this->extract($archive, $parent);
 
