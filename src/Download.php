@@ -15,9 +15,7 @@ class Download
     {
         $this->url = $zip;
 
-        if ($callback) {
-            $this->callback($callback);
-        }
+        $this->callback($callback ?: function () {});
     }
 
     public function callback(callable $callback)
@@ -91,8 +89,10 @@ class Download
 
     protected function notifier($status, $severity, $message, $code, $transferred, $max)
     {
-        static $startTime;
-        static $filesize = 0;
+        static $filesize, $startTime;
+        
+        $filesize = $filesize ?: $max ?: 0;
+        $startTime = $startTime ?: microtime(true);
 
         switch($status) {
             case STREAM_NOTIFY_CONNECT:
@@ -105,7 +105,8 @@ class Download
 
             case STREAM_NOTIFY_PROGRESS:
                 if ($filesize) {
-                    call_user_func($this->callback,
+                    call_user_func(
+                        $this->callback,
                         $transferred,
                         $filesize,
                         microtime(true) - $startTime
