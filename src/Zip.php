@@ -4,16 +4,25 @@ namespace Bhittani\Download;
 
 use ZipArchive;
 
-class Zip extends File
+class Zip extends Download
 {
+    use DownloadsResource;
+
+    protected $file;
+
+    public function __construct($file)
+    {
+        $this->file = $file;
+    }
+
     /** @inheritDoc */
-    public function download($resource, $destination, array $options = [])
+    public function download($destination, array $options = [])
     {
         $destination = rtrim($destination, '\/');
         $parent = dirname($destination);
         $archive = $destination.'.zip';
 
-        parent::download($resource, $archive);
+        $this->downloadResource(new File($this->file), $archive, $options);
 
         $name = $this->extract($archive, $parent);
 

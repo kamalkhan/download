@@ -7,9 +7,9 @@ class ZipTest extends TestCase
     /** @test */
     function it_downloads_a_zip_archive()
     {
-        $zip = new Zip();
+        $zip = new Zip($this->fixture('archive.zip'));
 
-        $zip->download($this->fixture('archive.zip'), $this->temp('folder'));
+        $zip->download($this->temp('folder'));
 
         $this->assertFileExists($file = $this->temp('folder/file.txt'));
 

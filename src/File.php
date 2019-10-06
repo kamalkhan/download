@@ -2,24 +2,19 @@
 
 namespace Bhittani\Download;
 
-class File implements Contract
+class File implements Contract, CallbackContract
 {
-    protected $callback;
+    use AcceptsCallback;
 
-    public function __construct(callable $callback = null)
+    protected $file;
+
+    public function __construct($file)
     {
-        $this->callback($callback ?: function () {});
-    }
-
-    public function callback(callable $callback)
-    {
-        $this->callback = $callback;
-
-        return $this;
+        $this->file = $file;
     }
 
     /** @inheritDoc */
-    public function download($resource, $destination, array $options = [])
+    public function download($destination, array $options = [])
     {
         if (file_exists($destination)) {
             throw new CanNotWriteException($destination);
@@ -29,10 +24,10 @@ class File implements Contract
             mkdir($dir, 0777, true);
         }
 
-        file_put_contents($destination, $this->getContents($resource, $options));
+        file_put_contents($destination, $this->getContents($options));
     }
 
-    protected function getContents($file, array $options)
+    protected function getContents(array $options)
     {
         $options = array_merge([
             'ssl' => true,
@@ -55,7 +50,7 @@ class File implements Contract
             'notification' => [$this, 'notifier'],
         ]);
 
-        $contents = file_get_contents($file, false, $context);
+        $contents = file_get_contents($this->file, false, $context);
 
         $bytes = strlen($contents);
 
@@ -81,7 +76,7 @@ class File implements Contract
                 break;
 
             case STREAM_NOTIFY_PROGRESS:
-                if ($filesize) {
+                if ($filesize && $this->callback) {
                     call_user_func(
                         $this->callback,
                         $transferred,

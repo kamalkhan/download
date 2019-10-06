@@ -7,9 +7,9 @@ class FileTest extends TestCase
     /** @test */
     function it_downloads_a_file()
     {
-        $file = new File;
+        $file = new File($this->fixture('file.txt'));
 
-        $file->download($this->fixture('file.txt'), $destination = $this->temp('foo.txt'));
+        $file->download($destination = $this->temp('foo.txt'));
 
         $this->assertFileExists($destination);
 
@@ -21,11 +21,13 @@ class FileTest extends TestCase
     {
         $data = [];
 
-        $file = new File(function ($bytes, $total, $time) use (& $data) {
+        $file = new File($this->fixture('file.txt'));
+
+        $file->callback(function ($bytes, $total, $time) use (& $data) {
             $data = compact('bytes', 'total', 'time');
         });
 
-        $file->download($this->fixture('file.txt'), $destination = $this->temp('foo.txt'));
+        $file->download($destination = $this->temp('foo.txt'));
 
         $bytes = strlen(file_get_contents($destination));
 
@@ -37,13 +39,14 @@ class FileTest extends TestCase
     /** @test */
     function it_throws_a_CanNotWriteException_if_the_destination_already_exists()
     {
-        $this->touch($file = $this->temp('foo.txt'));
+        $this->touch($destination = $this->temp('foo.txt'));
 
         try {
-            (new File)->download($this->fixture('file.txt'), $file);
+            (new File($this->fixture('file.txt')))
+                ->download($destination);
         } catch (CanNotWriteException $e) {
             return $this->assertEquals(
-                "Destination path [{$file}] already exists.",
+                "Destination path [{$destination}] already exists.",
                 $e->getMessage()
             );
         }
