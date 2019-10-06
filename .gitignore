@@ -1,0 +1,4 @@
+.DS_Store
+/vendor
+/tests/fixtures/destination
+/TODO.md
