@@ -2,18 +2,15 @@
 
 namespace Bhittani\Download;
 
-use ZipArchive;
-use RuntimeException;
-
-class Download
+class File implements Contract
 {
-    protected $url;
+    protected $file;
 
     protected $callback;
 
-    public function __construct($zip, callable $callback = null)
+    public function __construct($file, callable $callback = null)
     {
-        $this->url = $zip;
+        $this->file = $file;
 
         $this->callback($callback ?: function () {});
     }
@@ -25,34 +22,18 @@ class Download
         return $this;
     }
 
-    public function to($path, array $options = [])
+    /** @inheritDoc */
+    public function download($destination, array $options = [])
     {
-        $path = rtrim($path, '\/');
-        $parent = dirname($path);
-        $archive = $path.'.zip';
-
-        if (file_exists($path)) {
-            throw new RuntimeException("Destination path [{$path}] already exists.");
+        if (file_exists($destination)) {
+            throw new CanNotWriteException($destination);
         }
 
-        file_put_contents($archive, $this->getContents($options));
+        if (! is_dir($dir = dirname($destination))) {
+            mkdir($dir, 0777, true);
+        }
 
-        $name = $this->extract($archive, $parent);
-
-        rename($parent.'/'.$name, $path);
-    }
-
-    protected function extract($archive, $dest)
-    {
-        $zip = new ZipArchive;
-        $zip->open($archive);
-        $zip->extractTo($dest);
-        $binary = $zip->getNameIndex(0);
-        $zip->close();
-
-        unlink($archive);
-
-        return $binary;
+        file_put_contents($destination, $this->getContents($options));
     }
 
     protected function getContents(array $options)
@@ -78,13 +59,13 @@ class Download
             'notification' => [$this, 'notifier'],
         ]);
 
-        $archive = file_get_contents($this->url, false, $context);
+        $contents = file_get_contents($this->file, false, $context);
 
-        $bytes = strlen($archive);
+        $bytes = strlen($contents);
 
         $this->notifier(STREAM_NOTIFY_PROGRESS, null, null, null, $bytes, $bytes);
 
-        return $archive;
+        return $contents;
     }
 
     protected function notifier($status, $severity, $message, $code, $transferred, $max)

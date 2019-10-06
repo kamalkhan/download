@@ -1,4 +1,4 @@
 .DS_Store
 /vendor
-/tests/fixtures/destination
+/tests/temp
 /TODO.md
