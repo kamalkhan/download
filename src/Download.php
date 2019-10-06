@@ -90,7 +90,7 @@ class Download
     protected function notifier($status, $severity, $message, $code, $transferred, $max)
     {
         static $filesize, $startTime;
-        
+
         $filesize = $filesize ?: $max ?: 0;
         $startTime = $startTime ?: microtime(true);
 
