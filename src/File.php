@@ -4,14 +4,10 @@ namespace Bhittani\Download;
 
 class File implements Contract
 {
-    protected $file;
-
     protected $callback;
 
-    public function __construct($file, callable $callback = null)
+    public function __construct(callable $callback = null)
     {
-        $this->file = $file;
-
         $this->callback($callback ?: function () {});
     }
 
@@ -23,7 +19,7 @@ class File implements Contract
     }
 
     /** @inheritDoc */
-    public function download($destination, array $options = [])
+    public function download($file, $destination, array $options = [])
     {
         if (file_exists($destination)) {
             throw new CanNotWriteException($destination);
@@ -33,10 +29,10 @@ class File implements Contract
             mkdir($dir, 0777, true);
         }
 
-        file_put_contents($destination, $this->getContents($options));
+        file_put_contents($destination, $this->getContents($file, $options));
     }
 
-    protected function getContents(array $options)
+    protected function getContents($file, array $options)
     {
         $options = array_merge([
             'ssl' => true,
@@ -59,7 +55,7 @@ class File implements Contract
             'notification' => [$this, 'notifier'],
         ]);
 
-        $contents = file_get_contents($this->file, false, $context);
+        $contents = file_get_contents($file, false, $context);
 
         $bytes = strlen($contents);
 

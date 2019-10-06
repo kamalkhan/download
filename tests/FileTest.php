@@ -7,13 +7,13 @@ class FileTest extends TestCase
     /** @test */
     function it_downloads_a_file()
     {
-        $file = new File($this->fixture('file.txt'));
+        $file = new File;
 
-        $file->download($file = $this->temp('foo.txt'));
+        $file->download($this->fixture('file.txt'), $destination = $this->temp('foo.txt'));
 
-        $this->assertFileExists($file);
+        $this->assertFileExists($destination);
 
-        $this->assertEquals("Example file.\n", file_get_contents($file));
+        $this->assertEquals("Example file.\n", file_get_contents($destination));
     }
 
     /** @test */
@@ -21,15 +21,13 @@ class FileTest extends TestCase
     {
         $data = [];
 
-        $callback = function ($bytes, $total, $time) use (& $data) {
+        $file = new File(function ($bytes, $total, $time) use (& $data) {
             $data = compact('bytes', 'total', 'time');
-        };
+        });
 
-        $download = new File($this->fixture('file.txt'), $callback);
+        $file->download($this->fixture('file.txt'), $destination = $this->temp('foo.txt'));
 
-        $download->download($file = $this->temp('foo.txt'));
-
-        $bytes = strlen(file_get_contents($file));
+        $bytes = strlen(file_get_contents($destination));
 
         $this->assertEquals($bytes, $data['bytes']);
         $this->assertEquals($bytes, $data['total']);
@@ -42,7 +40,7 @@ class FileTest extends TestCase
         $this->touch($file = $this->temp('foo.txt'));
 
         try {
-            (new File($this->fixture('file.txt')))->download($file);
+            (new File)->download($this->fixture('file.txt'), $file);
         } catch (CanNotWriteException $e) {
             return $this->assertEquals(
                 "Destination path [{$file}] already exists.",
