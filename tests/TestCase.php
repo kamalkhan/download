@@ -2,7 +2,8 @@
 
 namespace Bhittani\Download;
 
-use DirectoryIterator;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 abstract class TestCase extends PHPUnitTestCase
@@ -26,15 +27,25 @@ abstract class TestCase extends PHPUnitTestCase
 
     function remove($directory)
     {
-        if (is_dir($directory)) {
-            foreach (new DirectoryIterator($directory) as $file) {
-                if (! $file->isDot()) {
-                    unlink($file->getPathname());
-                }
-            }
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $directory,
+                RecursiveDirectoryIterator::SKIP_DOTS
+            ),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
 
-            rmdir($directory);
+        foreach ($files as $file) {
+            $path = $file->getRealPath();
+
+            if ($file->isDir()) {
+                rmdir($path);
+            } else {
+                unlink($path);
+            }
         }
+
+        rmdir($directory);
     }
 
     function fixture($path)
