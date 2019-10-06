@@ -3,45 +3,17 @@
 namespace Bhittani\Download;
 
 use ZipArchive;
-use InvalidArgumentException;
 
-class Zip implements Contract
+class Zip extends File
 {
-    /**
-     * @inheritDoc
-     *
-     * @param string $file
-     * @param string $destination
-     * @param null|callable|Contract $callbackOrDownloader
-     */
-    public function download($file, $destination, $callbackOrDownloader = null)
+    /** @inheritDoc */
+    public function download($file, $destination, array $options = [])
     {
         $destination = rtrim($destination, '\/');
         $parent = dirname($destination);
         $archive = $destination.'.zip';
 
-        if (file_exists($destination)) {
-            throw new CanNotWriteException($destination);
-        }
-
-        $downloader = new File;
-
-        if ($callbackOrDownloader) {
-            if (is_callable($callbackOrDownloader)) {
-                $downloader->callback($callbackOrDownloader);
-            } else {
-                $downloader = $callbackOrDownloader;
-            }
-        }
-
-        if (! $downloader instanceof Contract) {
-            throw new InvalidArgumentException(sprintf(
-                "Downloader must be a callable or an instance of %s.",
-                InvalidArgumentException::class
-            ));
-        }
-
-        $downloader->download($file, $archive);
+        parent::download($file, $archive);
 
         $name = $this->extract($archive, $parent);
 
