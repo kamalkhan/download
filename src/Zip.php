@@ -22,6 +22,10 @@ class Zip extends Download
         $parent = dirname($destination);
         $archive = $destination.'.zip';
 
+        if (file_exists($destination)) {
+            throw new CanNotWriteException($destination);
+        }
+
         $this->downloadResource(new File($this->file), $archive, $options);
 
         $name = $this->extract($archive, $parent);
