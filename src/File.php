@@ -2,10 +2,8 @@
 
 namespace Bhittani\Download;
 
-class File implements Contract, CallbackContract
+class File extends Download
 {
-    use AcceptsCallback;
-
     protected $file;
 
     public function __construct($file)
@@ -66,7 +64,7 @@ class File implements Contract, CallbackContract
         $filesize = $filesize ?: $max ?: 0;
         $startTime = $startTime ?: microtime(true);
 
-        switch($status) {
+        switch ($status) {
             case STREAM_NOTIFY_CONNECT:
                 $startTime = microtime(true);
                 break;
