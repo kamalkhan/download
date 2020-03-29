@@ -29,7 +29,7 @@ class FileTest extends TestCase
 
         $file->download($destination = $this->temp('foo.txt'));
 
-        $bytes = strlen(file_get_contents($destination));
+        $bytes = filesize($destination);
 
         $this->assertEquals($bytes, $data['bytes']);
         $this->assertEquals($bytes, $data['total']);
