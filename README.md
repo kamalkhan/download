@@ -1,4 +1,4 @@
-# Name [![Build Status][icon-status]][link-status] [![Total Downloads][icon-downloads]][link-downloads] [![MIT License][icon-license]](LICENSE.md)
+# Download [![Build Status][icon-status]][link-status] [![Total Downloads][icon-downloads]][link-downloads] [![MIT License][icon-license]](LICENSE.md)
 
 Programmatically download files, zip archives and GitHub repositories.
 
