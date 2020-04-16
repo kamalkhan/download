@@ -1,4 +1,4 @@
-# Name [![Travis Build Status][icon-status]][link-status] [![Packagist Downloads][icon-downloads]][link-downloads] [![License][icon-license]](LICENSE.md)
+# Name [![Build Status][icon-status]][link-status] [![Total Downloads][icon-downloads]][link-downloads] [![MIT License][icon-license]](LICENSE.md)
 
 Programmatically download files, zip archives and GitHub repositories.
 
