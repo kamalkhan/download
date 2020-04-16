@@ -48,10 +48,13 @@
         "ext-zip": "*"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16",
         "phpunit/phpunit": "<8"
     },
     "scripts": {
-        "test": "phpunit --colors=always"
+        "test": "phpunit --colors=always",
+        "cs-fix": "php-cs-fixer fix --using-cache=no",
+        "cs-check": "php-cs-fixer fix --dry-run --using-cache=no"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
