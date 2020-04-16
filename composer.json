@@ -1,7 +1,7 @@
 {
     "name": "bhittani/download",
     "license": "MIT",
-    "description": "Archive downloader.",
+    "description": "Programmatically download files, zip archives and GitHub repositories.",
     "keywords": [
         "zip",
         "github",
