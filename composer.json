@@ -2,7 +2,12 @@
     "name": "bhittani/download",
     "license": "MIT",
     "description": "Archive downloader.",
-    "keywords": ["zip", "download"],
+    "keywords": [
+        "zip",
+        "github",
+        "file",
+        "downloader"
+    ],
     "homepage": "https://github.com/kamalkhan/download",
     "authors": [
         {
@@ -34,7 +39,9 @@
     "config": {
         "sort-packages": true,
         "preferred-install": "dist",
-        "platform": { "php": "5.6" }
+        "platform": {
+            "php": "5.6"
+        }
     },
     "require": {
         "php": ">=5.6",
