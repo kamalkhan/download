@@ -57,7 +57,7 @@ class File extends Download
         return $contents;
     }
 
-    protected function notifier($status, $severity, $message, $code, $transferred, $max)
+    public function notifier($status, $severity, $message, $code, $transferred, $max)
     {
         static $filesize, $startTime;
 
@@ -74,7 +74,11 @@ class File extends Download
                 break;
 
             case STREAM_NOTIFY_PROGRESS:
-                if ($filesize && $this->callback) {
+                if ($this->callback && ($transferred + 8192) > 0) {
+                    $transferred += 8192;
+                    if ($transferred >= $filesize) {
+                        $transferred = $filesize;
+                    }
                     call_user_func(
                         $this->callback,
                         $transferred,
