@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of bhittani/download.
+ *
+ * (c) Kamal Khan <shout@bhittani.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
 namespace Bhittani\Download;
 
 use Exception;
@@ -31,7 +40,7 @@ class GitHub extends Download
         return $this;
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     public function download($destination, array $options = [])
     {
         $version = strtolower($this->version ?: 'latest');

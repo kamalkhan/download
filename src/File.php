@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of bhittani/download.
+ *
+ * (c) Kamal Khan <shout@bhittani.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
 namespace Bhittani\Download;
 
 class File extends Download
@@ -11,7 +20,7 @@ class File extends Download
         $this->file = $file;
     }
 
-    /** @inheritDoc */
+    /** {@inheritdoc} */
     public function download($destination, array $options = [])
     {
         if (file_exists($destination)) {
@@ -23,6 +32,37 @@ class File extends Download
         }
 
         file_put_contents($destination, $this->getContents($options));
+    }
+
+    public function notifier($status, $severity, $message, $code, $transferred, $max)
+    {
+        static $filesize, $startTime;
+
+        $filesize = $filesize ?: $max ?: 0;
+        $startTime = $startTime ?: microtime(true);
+
+        switch ($status) {
+            case STREAM_NOTIFY_CONNECT:
+                $startTime = microtime(true);
+                break;
+            case STREAM_NOTIFY_FILE_SIZE_IS:
+                $filesize = $max;
+                break;
+            case STREAM_NOTIFY_PROGRESS:
+                if ($this->callback && ($transferred + 8192) > 0) {
+                    $transferred += 8192;
+                    if ($transferred >= $filesize) {
+                        $transferred = $filesize;
+                    }
+                    call_user_func(
+                        $this->callback,
+                        $transferred,
+                        $filesize,
+                        microtime(true) - $startTime
+                    );
+                }
+                break;
+        }
     }
 
     protected function getContents(array $options)
@@ -55,38 +95,5 @@ class File extends Download
         $this->notifier(STREAM_NOTIFY_PROGRESS, null, null, null, $bytes, $bytes);
 
         return $contents;
-    }
-
-    public function notifier($status, $severity, $message, $code, $transferred, $max)
-    {
-        static $filesize, $startTime;
-
-        $filesize = $filesize ?: $max ?: 0;
-        $startTime = $startTime ?: microtime(true);
-
-        switch ($status) {
-            case STREAM_NOTIFY_CONNECT:
-                $startTime = microtime(true);
-                break;
-
-            case STREAM_NOTIFY_FILE_SIZE_IS:
-                $filesize = $max;
-                break;
-
-            case STREAM_NOTIFY_PROGRESS:
-                if ($this->callback && ($transferred + 8192) > 0) {
-                    $transferred += 8192;
-                    if ($transferred >= $filesize) {
-                        $transferred = $filesize;
-                    }
-                    call_user_func(
-                        $this->callback,
-                        $transferred,
-                        $filesize,
-                        microtime(true) - $startTime
-                    );
-                }
-                break;
-        }
     }
 }

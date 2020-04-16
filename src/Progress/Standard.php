@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of bhittani/download.
+ *
+ * (c) Kamal Khan <shout@bhittani.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
 namespace Bhittani\Download\Progress;
 
 class Standard
@@ -20,7 +29,7 @@ class Standard
             $progress = sprintf("\e[K\rUnknown filesize.. %s done.", $this->bytesForHumans($bytes));
         } else {
             $length = $bytes / $total * 50;
-            $progress = sprintf("\e[K\r[%-50s] %d%% (%s/%s) %2ds", str_repeat("=", $length). ">", $length*2, $this->bytesForHumans($bytes), $this->bytesForHumans($total), $time);
+            $progress = sprintf("\e[K\r[%-50s] %d%% (%s/%s) %2ds", str_repeat('=', $length).'>', $length * 2, $this->bytesForHumans($bytes), $this->bytesForHumans($total), $time);
         }
 
         if ($this->printer) {
@@ -40,6 +49,6 @@ class Standard
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return round($bytes, $precision).' '.$units[$pow];
     }
 }
