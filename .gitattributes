@@ -5,7 +5,6 @@
 /.gitignore export-ignore
 /phpunit.xml export-ignore
 /.travis.yml export-ignore
-/.styleci.yml export-ignore
 /composer.lock export-ignore
 /.editorconfig export-ignore
 /.gitattributes export-ignore
