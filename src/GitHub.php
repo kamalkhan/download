@@ -43,11 +43,7 @@ class GitHub extends Download
     /** {@inheritdoc} */
     public function download($destination, array $options = [])
     {
-        $version = strtolower($this->version ?: 'latest');
-
-        if ($version == 'latest') {
-            $version = $this->getVersion();
-        }
+        $version = $this->getVersion();
 
         $zip = sprintf($this->downloadUrl, $this->repository, $version);
 
@@ -58,10 +54,14 @@ class GitHub extends Download
 
     public function getVersion()
     {
+        if (strtolower($this->version) != 'latest') {
+            return $this->version;
+        }
+
         try {
-            return $this->getLatestVersion($this->repository);
+            return $this->version = $this->getLatestVersion($this->repository);
         } catch (Exception $e) {
-            return 'master';
+            return $this->version = 'master';
         }
     }
 
