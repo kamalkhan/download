@@ -91,6 +91,7 @@ class GitHub extends Download
         $ch = curl_init(rtrim($this->api.'/'.ltrim($uri, '\/'), '\/'));
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'User-Agent: kamalkhan/download',
             'Accept: application/vnd.github.v3+json',
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
