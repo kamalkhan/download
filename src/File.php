@@ -14,6 +14,8 @@ namespace Bhittani\Download;
 class File extends Download
 {
     protected $file;
+    protected $filesize;
+    protected $startTime;
 
     public function __construct($file)
     {
@@ -23,6 +25,9 @@ class File extends Download
     /** {@inheritdoc} */
     public function download($destination, array $options = [])
     {
+        $this->filesize = null;
+        $this->startTime = null;
+
         if (file_exists($destination)) {
             throw new CanNotWriteException($destination);
         }
@@ -36,29 +41,27 @@ class File extends Download
 
     public function notifier($status, $severity, $message, $code, $transferred, $max)
     {
-        static $filesize, $startTime;
-
-        $filesize = $filesize ?: $max ?: 0;
-        $startTime = $startTime ?: microtime(true);
+        $this->filesize = $this->filesize ?: $max ?: 0;
+        $this->startTime = $this->startTime ?: microtime(true);
 
         switch ($status) {
             case STREAM_NOTIFY_CONNECT:
-                $startTime = microtime(true);
+                $this->startTime = microtime(true);
                 break;
             case STREAM_NOTIFY_FILE_SIZE_IS:
-                $filesize = $max;
+                $this->filesize = $max;
                 break;
             case STREAM_NOTIFY_PROGRESS:
                 if ($this->callback && ($transferred + 8192) > 0) {
                     $transferred += 8192;
-                    if ($transferred >= $filesize) {
-                        $transferred = $filesize;
+                    if ($transferred >= $this->filesize) {
+                        $transferred = $this->filesize;
                     }
                     call_user_func(
                         $this->callback,
                         $transferred,
-                        $filesize,
-                        microtime(true) - $startTime
+                        $this->filesize,
+                        microtime(true) - $this->startTime
                     );
                 }
                 break;
