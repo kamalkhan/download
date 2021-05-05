@@ -26,7 +26,18 @@ class Standard
         $progress = '';
 
         if (! $total) {
-            $progress = "\e[K\rDownloading...";
+            static $dots = 1;
+            static $speed = 1;
+
+            if ($speed++ > 200) {
+                $speed = 1;
+
+                if ($dots++ > 2) {
+                    $dots = 1;
+                }
+            }
+
+            $progress = "\e[K\rDownloading".str_repeat('.', $dots);
         } else {
             $length = $bytes / $total * 50;
             $progress = vsprintf("\e[K\r[%-50s] %d%% (%s/%s) %2ds", [
