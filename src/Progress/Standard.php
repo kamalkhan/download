@@ -45,7 +45,7 @@ class Standard
                 $length * 2,
                 $this->bytesForHumans($bytes),
                 $this->bytesForHumans($total),
-                $time
+                $time,
             ]);
         }
 
@@ -58,6 +58,6 @@ class Standard
 
     protected function bytesForHumans($bytes, $precision = 2)
     {
-        return number_format($bytes / 1048576, $precision) . ' MB';
+        return number_format($bytes / 1048576, $precision).' MB';
     }
 }
