@@ -52,6 +52,9 @@ class Zip extends Download
 
         unlink($archive);
 
-        return $binary;
+        $parts = explode('/', str_replace('\\', '/', $binary));
+        $name = array_shift($parts);
+
+        return $name;
     }
 }
